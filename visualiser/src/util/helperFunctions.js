@@ -1,4 +1,5 @@
 import BiMap from 'bidirectional-map'
+
 /* Express Helper Functions */
 const apiUrl = "http://localhost:8080";
 
@@ -57,17 +58,36 @@ function delEdge(matrix, i, j) {
 }
 
 
+
 /* TTx Processing */
+
+function isRecentTimestamp(record) {
+  let now = Date.now().toString()
+  let record_sent_time = record.time_sent
+  let diff_ms = now - record_sent_time
+  let diff_min = (diff_ms / 60000).toFixed(2)
+  console.log(`isRecentTime, time passed: ${now} - ${record_sent_time} = ${diff_min} minutes`)
+  
+  if(diff_min > 5) return false
+  return true;
+}
+
+
 export function processTTxMatrix(biMap, records) {
   let matrix = createMatrix(biMap.size)
 
   for (let record of records) { 
+    // only visualise 'recent' records
+    if(!isRecentTimestamp(record)) continue;
+
     let i = biMap.get(record.target_addr)
+
     for (let receipt of record.receipts) {
       let j = biMap.get(receipt.returner_addr)
-      console.log(`adding edge ${i}->${j} || ${record.target_addr} => ${receipt.returner_addr}`)
       matrix = addEdge(matrix, i, j)
+      console.log(`added edge ${i}->${j} || ${record.target_addr} => ${receipt.returner_addr}`)
     }
+
   }
 
   return matrix;
@@ -101,26 +121,4 @@ export function printBiMap(biMap) {
   for (let entry of biMap.entries()) {
     console.log(`biMap entry: ${entry}`)
   }
-}
-
-
-/* Colours */
-
-/*
-  Returns an array of nodeMap.size colours to increment a rainbow gradient
- */
-export function getRainbowColours(nodeMap) {
-  const gradientArray = new Gradient()
-  .setColorGradient(
-    "#eb1418",
-    "#db3e00",
-    "#fccb00",
-    "#00d084",
-    "#0693e3",
-    "#9900ef",
-    "#f78da7"
-    )
-  .setMidpoint(nodeMap.size)
-  .getColors();
-  return gradientArray
 }

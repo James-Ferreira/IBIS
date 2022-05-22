@@ -79,6 +79,7 @@ dpt.on('error', (err) => console.error(chalk.red(`DPT error: ${err}`)))
 //  rlpx connection handling
 rlpx.on('error', (err) => console.error(chalk.red(`RLPx error: ${err.stack || err}`)))
 rlpx.on('peer:added', (peer) => {
+  const node_id = peer.getId();
   const addr = getPeerAddr(peer)
   const eth = peer.getProtocols()[0]
   const requests: {
@@ -144,18 +145,18 @@ rlpx.on('peer:added', (peer) => {
 
       case devp2p.ETH.MESSAGE_CODES.TX:
         if (!forkVerified) break
-        console.log("transaction received from: " + addr)
+        console.log("transaction received from: " + node_id)
         try {
           const tx = TransactionFactory.fromSerializedData(payload);
           console.log(chalk.gray("...transaction received with hash: ") + tx.hash().toString('hex'))
-          IBIS.verifyTTx(tx, addr);
+          IBIS.verifyTTx(tx, node_id);
         }
         catch(e) {
           console.log(chalk.gray("...attemping to parse tx from block body"));
           for (const item of payload) {
             const tx = TransactionFactory.fromBlockBodyData(item)
             console.log(chalk.gray("...transaction received with hash: ") + tx.hash().toString('hex'))
-            IBIS.verifyTTx(tx, addr);
+            IBIS.verifyTTx(tx, node_id);
           }
         }
         finally {

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import ChordContainer from "./containers/ChordContainer";
-import { addNewRecord, fetchRecords, printBiMap, createNodeMap, createMatrix, processTTxMatrix } from "./util/helperFunctions";
+import { addNewRecord, fetchRecords, printBiMap, createNodeMap, createMatrix, processTTxMatrix, getRainbowColours } from "./util/helperFunctions";
 import Records from "./components/Records";
 import BiMap from 'bidirectional-map'
 // MUI
 import Button from '@mui/material/Button';
 import ibis from './assets/ibis-logo.png'
+
 
 function App() {
   const [records, setRecords] = useState([]);
@@ -46,6 +47,7 @@ function App() {
 
         //process the matrix to have node edges
         let mat = processTTxMatrix(map, newRecords)
+
         setRecords(newRecords)
         setNodeMap(map);
         setMatrix(mat)
