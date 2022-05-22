@@ -61,14 +61,25 @@ function delEdge(matrix, i, j) {
 
 /* TTx Processing */
 
+
+/*
+  Checks the time a TTx was sent into a network vs. when it was received.
+  Used as a rough approximation of if the receipt was multi-hop or single hop
+*/
+function isSingleHopTime(record, receipt) {
+
+}
+
+
 function isRecentTimestamp(record) {
   let now = Date.now().toString()
   let record_sent_time = record.time_sent
   let diff_ms = now - record_sent_time
   let diff_min = (diff_ms / 60000).toFixed(2)
   console.log(`isRecentTime, time passed: ${now} - ${record_sent_time} = ${diff_min} minutes`)
-  
-  if(diff_min > 5) return false
+
+  //only visualise edges discovered in the last 30s
+  if(diff_min > 0.5) return false
   return true;
 }
 

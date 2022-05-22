@@ -278,8 +278,9 @@ export default class IbisWorker extends EventEmitter{
     console.log(chalk.bgWhite(chalk.black("       MENU        ")));
     console.log(chalk.green("   0) ") + "print status");
     console.log(chalk.green("   1) ") +  "delve");
-    console.log(chalk.green("   2) ") +  "tagged transaction");
-    console.log(chalk.green("   3) ") +   "exit");
+    console.log(chalk.green("   2) ") +  "tagged transaction (manual)");
+    console.log(chalk.green("   3) ") +  "tagged transaction (automatic)");
+    console.log(chalk.green("   4) ") +   "exit");
 
     let fn: any;
 
@@ -294,6 +295,8 @@ export default class IbisWorker extends EventEmitter{
         return new Promise(resolve => resolve(this.delve_menu()));
       case '2':
         return new Promise(resolve => resolve(this.ttx_menu()));
+      case '3':
+        return new Promise(resolve => resolve(this.auto_ttx()));
       default:
         console.log(chalk.red('invalid selection'));
     }
@@ -372,6 +375,35 @@ export default class IbisWorker extends EventEmitter{
         } else {
           resolve("invalid selection")
         }
+      });
+    }
+
+    /**
+   * Facilitates the CLI to active automatic TTx polling
+   * @returns Promise when TTx logic has returned
+   */
+     async auto_ttx() {
+      console.log(chalk.red("\n automatic mode"))
+      let peers = this._rlpx.getPeers() as Array<devp2p.Peer>;
+      let count = 0;
+
+      // print peers until roughly 2 TTx per peer has been sent
+      while(count < peers.length * 2) {
+        for(let peer of peers){
+          let peer_id = `unknown id`
+          let _id = peer.getId()
+          if(_id !== null) peer_id = _id.toString('hex').slice(0, 7);
+
+          console.log(`sending TTx to ${peer_id}`)
+          this.sendTTx(peer);
+          count += 1;
+
+          await this.delay(2000);
+        }
+      }
+
+      return new Promise((resolve, reject) => {
+          resolve(`sent ${count} ttx`)
       });
     }
 

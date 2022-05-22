@@ -79,7 +79,7 @@ dpt.on('error', (err) => console.error(chalk.red(`DPT error: ${err}`)))
 //  rlpx connection handling
 rlpx.on('error', (err) => console.error(chalk.red(`RLPx error: ${err.stack || err}`)))
 rlpx.on('peer:added', (peer) => {
-  const node_id = peer.getId();
+  const node_id = peer.getId().toString('hex').slice(0, 7);
   const addr = getPeerAddr(peer)
   const eth = peer.getProtocols()[0]
   const requests: {
