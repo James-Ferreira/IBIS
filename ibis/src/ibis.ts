@@ -137,16 +137,13 @@ export default class IbisWorker extends EventEmitter{
     } catch(e){
       console.log(e);
     }
-    console.log(chalk.magenta(`(ibis)`) + "tracking " + chalk.cyan(` ${this._db.countTxRecord}`) + " TTx's...");
-    
     //used to increment transaction nonce
     //todo: move to database
     this.tx_nonce += 1; 
   }
 
-  verifyTTx(tx: TypedTransaction, peerAddr: string) {
+  verifyTTxHash(txHash: string, peerAddr: string) {
     console.log(chalk.magenta(`(ibis)`) + chalk.green(` verifying TTx from `) + peerAddr );
-    let txHash = tx.hash().toString('hex')
 
     //if(this._ttx_hashes.has(txHash)) {
     try {
@@ -311,7 +308,7 @@ export default class IbisWorker extends EventEmitter{
     console.log(chalk.grey("RLPx peers: ") + chalk.cyan(this._rlpx.getPeers().length.toString()));
     console.log(chalk.grey("DPT peers: ") + chalk.cyan(this._dpt.getPeers().length.toString()));
     console.log(chalk.grey("Graph size: ") + chalk.cyan(this._map.size.toString()));
-    console.log(chalk.gray(`...there are ${this._db.countTxRecord} TTx's in circulation`))
+    console.log(chalk.gray(`...there are ${this._db.countTxRecord()} TTx's in circulation`))
 
     return "status complete"
   }
@@ -398,7 +395,7 @@ export default class IbisWorker extends EventEmitter{
           this.sendTTx(peer);
           count += 1;
 
-          await this.delay(2000);
+          await this.delay(1000);
         }
       }
 

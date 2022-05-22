@@ -74,7 +74,7 @@ function App() {
         borderRadius: "24px",
         flexDirection: "column",
         padding: "1em",
-        background: "linear-gradient(90deg, rgba(112,217,99,1) 0%, rgba(127,190,236,1) 37%, rgba(185,243,255,1) 100%)",
+        background: "linear-gradient(115deg, rgba(99,99,217,1) 0%, rgba(185,127,236,1) 19%, rgba(185,243,255,1) 100%)",
         textAlign: "center", 
         alignItems: "center"
       }}>

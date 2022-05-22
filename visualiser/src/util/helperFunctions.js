@@ -78,8 +78,8 @@ function isRecentTimestamp(record) {
   let diff_min = (diff_ms / 60000).toFixed(2)
   console.log(`isRecentTime, time passed: ${now} - ${record_sent_time} = ${diff_min} minutes`)
 
-  //only visualise edges discovered in the last 30s
-  if(diff_min > 0.5) return false
+  //only visualise edges discovered in the last 15s
+  if(diff_min > 0.25) return false
   return true;
 }
 

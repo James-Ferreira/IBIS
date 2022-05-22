@@ -148,15 +148,17 @@ rlpx.on('peer:added', (peer) => {
         console.log("transaction received from: " + node_id)
         try {
           const tx = TransactionFactory.fromSerializedData(payload);
-          console.log(chalk.gray("...transaction received with hash: ") + tx.hash().toString('hex'))
-          IBIS.verifyTTx(tx, node_id);
+          let hash = tx.hash().toString('hex')
+          console.log(chalk.gray("...transaction received with hash: ") + hash)
+          IBIS.verifyTTxHash(hash, node_id);
         }
         catch(e) {
           console.log(chalk.gray("...attemping to parse tx from block body"));
           for (const item of payload) {
             const tx = TransactionFactory.fromBlockBodyData(item)
-            console.log(chalk.gray("...transaction received with hash: ") + tx.hash().toString('hex'))
-            IBIS.verifyTTx(tx, node_id);
+            let hash = tx.hash().toString('hex')
+            console.log(chalk.gray("...transaction received with hash: ") + hash)
+            IBIS.verifyTTxHash(hash, node_id);
           }
         }
         finally {
@@ -170,6 +172,9 @@ rlpx.on('peer:added', (peer) => {
 
         for (const item of payload) {
           console.log("tx hash: " + item.toString('hex'));
+          let hash = item.toString('hex')
+          console.log(chalk.gray("...pooled transaction received with hash: ") + hash)
+          IBIS.verifyTTxHash(hash, node_id);
         }
 
         break
