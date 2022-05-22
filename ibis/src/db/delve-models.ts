@@ -1,32 +1,24 @@
 import * as Mongoose from "mongoose";
 
-// Represents a result from a Delve
+// Represents a single result from a Delve (i.e. an unconfirmed peer)
 export interface DelveEntry {
     node_id: string,
     timestamp: string,
 }
 
-// Represents pre-computed delve_ids
-export interface DelveIds {
-    node_id: string,
-    computed_ids: [string],
-}
+export const DelveEntrySchema = new Mongoose.Schema<DelveEntry>({
+    node_id: {type: String, required: true},
+    timestamp: {type: String, required: true},
+})
 
+// Represents a collection of delve results for a peer (i.e. recreated DHT for a given node_id)
 export interface DelveResults {
     node_id: string,
-    delved_peers: [DelveIds]
+    delved_peers: [DelveEntry]
 }
-
-export const DelveIdsSchema = new Mongoose.Schema<DelveIds>({
-    node_id: {type: String, required: true},
-    computed_ids: {type: [String], required: true},
-})
-    
-// Create a Schema corresponding to the document interface.
 export const DelveResultsSchema = new Mongoose.Schema<DelveResults>({
     node_id: {type: String, required: true},
-    delved_peers: {type: [DelveIdsSchema], required: true},
+    delved_peers: [DelveEntrySchema],
 });
     
-// Create a Model.
 export const DelveResultsModel = Mongoose.model<DelveResults>('DelveResults', DelveResultsSchema);

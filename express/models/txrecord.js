@@ -19,23 +19,3 @@ const TTxRecordSchema = new Schema({
   receipts: [TTxReceiptSchema],
 })
 export const TTxRecordModel = mongoose.model("TTxRecord", TTxRecordSchema)
-
-// const TTxSchema = new Schema({
-//   _id: mongoose.Schema.Types.ObjectId,
-//   name: { type: String, required: true },
-//   ttxhash: { type: String, required: true },
-//   time: { type: String, required: true },
-// });
-
-// const TTxModel = mongoose.model("TTxRecord", TTxSchema);
-
-// module.exports = TTxModel;
-
-
-/*
-For every TTxRecord
-  let targt_addr = t
-  for every receipt
-    let returner_addr = r
-    createLink(t, r)
-*/

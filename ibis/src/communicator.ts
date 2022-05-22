@@ -19,19 +19,34 @@ import { PeerInfo, xor, ETH, Peer } from '@ethereumjs/devp2p'
 import { buffer2int } from '@ethereumjs/devp2p'
 import { Address } from 'ethereumjs-util'
 
-/* ======= SETUP ======= */
+/* ======= PRIVATE NETWORK SETUP ======= */
+const PRIVATE_KEY = Buffer.from("133965f412d1362645cbd963619023585abc8765c7372ed238374acb884b2b3a", 'hex')
 
 // initialise chain, peer table, rlpx protocol, and the ibis worker
-const PRIVATE_KEY = Buffer.from("133965f412d1362645cbd963619023585abc8765c7372ed238374acb884b2b3a", 'hex')
+
 var GENESIS_DIFFICULTY = 0x77777; 
 var GENESIS_HASH = "98a440ae7d107996b4a68e08e54b36acaefb63e66dcbabfe115618116713f4cb";
 var IBIS_BOOTNODE_IP = "172.16.254.62";
-const bootnode = {
+const BOOTNODES = [{
   address: IBIS_BOOTNODE_IP,
   udpPort: 30303,
   tcpPort: 30303,
-}
+}]
 const common = new Common({ chain: myCustomChain, hardfork: Hardfork.London})
+
+/* ======= GOERLI TEST NETWORK SETUP ======= */
+// const GENESIS_DIFFICULTY = 17179869184;
+// const GENESIS_HASH = "d4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3"
+// const common = new Common({ chain: Chain.Goerli, hardfork: Hardfork.Berlin })
+// const bootstrapNodes = common.bootstrapNodes()
+// const BOOTNODES = bootstrapNodes.map((node: any) => {
+//   return {
+//     address: node.ip,
+//     udpPort: node.port,
+//     tcpPort: node.port,
+//   }
+// })
+
 const REMOTE_CLIENTID_FILTER = [
   'go1.5',
   'go1.6',
@@ -69,10 +84,12 @@ dpt.bind(30303, '0.0.0.0')
 rlpx.listen(30303, '0.0.0.0')
 
 
-//add bootnode
-dpt.addPeer(bootnode).catch((err) => {
-  console.error(chalk.bold.red(`DPT bootstrap error: ${err.stack || err}`))
-})
+//add bootnode(s)
+for (const bootnode of BOOTNODES) {
+  dpt.bootstrap(bootnode).catch((err) => {
+    console.error(chalk.bold.red(`DPT bootstrap error: ${err.stack || err}`))
+  })
+}
 
 dpt.on('error', (err) => console.error(chalk.red(`DPT error: ${err}`)))
 

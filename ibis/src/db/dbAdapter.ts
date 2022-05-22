@@ -1,7 +1,5 @@
 import Mongoose from "mongoose";
 import { TTxReceipt, TTxRecord, TTxReceiptSchema, TTxRecordSchema, TTxRecordModel } from "./ttx-models";
-import { DelveEntry, DelveIds, DelveResults, DelveIdsSchema, DelveResultsSchema, DelveResultsModel } from "./delve-models";
-
 
 export default class DatabaseAdapter {
     _client: any;
@@ -86,29 +84,5 @@ export default class DatabaseAdapter {
         return res.length
     }
 
-    /* === DELVE === */
-
-    // async addDelveEntry(target: string, entry: DelveEntry) {
-    //     let record = await DelveResultsModel.find(target);
-    //     console.log("returned: ", record);
-        
-    // }
-
-
-    // addNewTTxRecord(record: TTxRecord) {
-    //     const apiUrl = "http://localhost:8080";
-    //     fetch(`${apiUrl}/records`, {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-      
-    //         body: JSON.stringify({record}),
-      
-    //       }).then(async (response) => {
-    //         const data = await response.json();
-    //         return data.record
-    //       });
-    // }
   }
   

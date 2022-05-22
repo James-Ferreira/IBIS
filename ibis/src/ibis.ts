@@ -20,11 +20,8 @@ import { buffer2int, int2buffer } from '@ethereumjs/devp2p'
 import { Address } from 'ethereumjs-util'
 import { TypedTransaction, TransactionFactory, Transaction, JsonTx, FeeMarketEIP1559Transaction } from '@ethereumjs/tx'
 
-
 type NodeType = { id: string, lastSeen: string}
 type Record = {id: string, lastSeen: string}
-const CHAIN_ID =  0x189f624f;
-const Web3 = require('web3')
 
 
 export default class IbisWorker extends EventEmitter{
@@ -84,6 +81,21 @@ export default class IbisWorker extends EventEmitter{
       accessList: [],
       type: "0x02"
     }
+
+    // const common = new Common({ chain: Chain.Goerli, hardfork: Hardfork.Berlin})
+
+    // const txData = {
+    //   "data": "0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    //   "gasLimit": "0x02625a00",
+    //   "gasPrice": "0x01",
+    //   "nonce": "0x00",
+    //   "to": "0xcccccccccccccccccccccccccccccccccccccccc",
+    //   "value": "0x0186a0",
+    //   "chainId": "0x05",
+    //   "accessList": [
+    //   ],
+    //   "type": "0x01"
+    // }
     const tx = TransactionFactory.fromTxData(txData, { common })
 
     //sign and validate
@@ -150,7 +162,7 @@ export default class IbisWorker extends EventEmitter{
 
       let receipt = {
         returner_addr: peerAddr,
-        ibis_receiver_addr: this._address.toString(),
+        ibis_receiver_addr: this._address.toString().slice(0, 7),
         time_returned:  Date.now().toString(),
       }
       
@@ -171,8 +183,7 @@ export default class IbisWorker extends EventEmitter{
   
   /* ======= DELVING FUNCTIONS ======= */
 
-  async delve(target: PeerInfo, delve_id: Buffer) {
-
+  async delve(target: PeerInfo) {
     if(!target.address) {
       console.log("no target address, exiting delve")
       return;
@@ -332,7 +343,7 @@ export default class IbisWorker extends EventEmitter{
       let opt = parseInt(user_input)
 
       if(( 0 <= opt && opt <= count - 1)) {
-        this.delve(peers[opt], peers[opt].id as Buffer)
+        this.delve(peers[opt])
         console.log("delving complete...")
         resolve(peers[opt])
       } else {
@@ -416,34 +427,6 @@ export default class IbisWorker extends EventEmitter{
         console.log(chalk.green("\n\nrestarting...\n\n"));
       }
   
-      /* TTx */
-      // for(let peer of this._rlpx.getPeers()) {
-      //   this.sendTTx(peer as unknown as Peer);
-      // }
-  
-      /* Delving */
-      // for(let peer of this._dpt.getPeers()) {
-      //   let delve_ids = generateDistanceIds(peer.id as Buffer);
-      //   this.delve(peer, peer.id as Buffer)
-  
-      //   // for(let id of delve_ids) {
-      //   //   this.delve(peer, id)
-      //   // }
-      // }
-  
-  
-      /* Node Map */
-  
-      // const peers = dpt.getPeers()
-  
-      // for(const peer of peers) {
-      //   let delve_ids = generateDistanceIds(peer.id as Buffer);
-  
-      //   for(let id of delve_ids) {
-      //     console.log("...delving id " + peer.id + "with" + id)
-      //     delve(bootnode, id as Buffer)
-      //   }
-      // }
     }
 
     delay(ms: number) {
