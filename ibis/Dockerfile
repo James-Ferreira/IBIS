@@ -10,6 +10,7 @@ RUN git clone https://github.com/ethereumjs/ethereumjs-monorepo.git
 
 # install tests
 RUN cd ethereumjs-monorepo \
+    && git checkout a133e27f98f3dd919594ddd2cce8db53edcbbef2 \
     && git submodule init \
     && git submodule update
 
